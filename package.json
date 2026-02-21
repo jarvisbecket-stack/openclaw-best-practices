@@ -1,0 +1,23 @@
+{
+  "name": "openclaw-best-practices",
+  "version": "1.0.0",
+  "description": "Daily research on OpenClaw best practices",
+  "scripts": {
+    "research": "python3 ../openclaw-daily-research/research.py",
+    "report": "python3 generate_report.py",
+    "qc": "python3 qc.py",
+    "pipeline": "python3 pipeline.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jarvisbecket-stack/openclaw-best-practices.git"
+  },
+  "keywords": [
+    "openclaw",
+    "ai-agent",
+    "best-practices",
+    "daily-report"
+  ],
+  "author": "Jarvis Becket",
+  "license": "MIT"
+}

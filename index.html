@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenClaw Best Practices Daily - 2026-02-21</title>
+    <meta name="description" content="Daily research on OpenClaw best practices, security updates, and community tips">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a25;
+            --bg-hover: #252535;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-info: #3b82f6;
+            --border-color: #2a2a3a;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            max-width: 600px;
+        }
+        
+        .report-date {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--bg-card);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+            margin-top: 1rem;
+        }
+        
+        /* Navigation */
+        nav {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+        
+        .nav-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        
+        .nav-link:hover {
+            background: var(--bg-hover);
+            color: var(--text-primary);
+        }
+        
+        .nav-link.active {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+        
+        /* Section Styles */
+        section {
+            margin-bottom: 3rem;
+        }
+        
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        
+        .section-icon.security { background: rgba(239, 68, 68, 0.2); }
+        .section-icon.performance { background: rgba(16, 185, 129, 0.2); }
+        .section-icon.features { background: rgba(99, 102, 241, 0.2); }
+        .section-icon.community { background: rgba(245, 158, 11, 0.2); }
+        .section-icon.implementation { background: rgba(59, 130, 246, 0.2); }
+        .section-icon.resources { background: rgba(139, 92, 246, 0.2); }
+        
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.25rem;
+            transition: all 0.2s;
+        }
+        
+        .card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow);
+            transform: translateY(-2px);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .badge.critical { background: rgba(239, 68, 68, 0.2); color: var(--accent-danger); }
+        .badge.high { background: rgba(245, 158, 11, 0.2); color: var(--accent-warning); }
+        .badge.medium { background: rgba(59, 130, 246, 0.2); color: var(--accent-info); }
+        .badge.low { background: rgba(16, 185, 129, 0.2); color: var(--accent-success); }
+        .badge.new { background: rgba(99, 102, 241, 0.2); color: var(--accent-primary); }
+        
+        .card-source {
+            font-size: 0.875rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-description {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        
+        .card-action {
+            margin-top: 0.75rem;
+            padding: 0.75rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--accent-success);
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.75rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Feature List */
+        .feature-list {
+            list-style: none;
+            margin-top: 0.75rem;
+        }
+        
+        .feature-list li {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.375rem 0;
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+        }
+        
+        .feature-list li::before {
+            content: '✓';
+            color: var(--accent-success);
+            font-weight: bold;
+        }
+        
+        /* Implementation Log */
+        .log-entry {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+        }
+        
+        .log-time {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            font-family: monospace;
+        }
+        
+        .log-content {
+            flex: 1;
+        }
+        
+        .log-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .log-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Resources */
+        .resource-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+        
+        .resource-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+        
+        .resource-item:hover {
+            border-color: var(--accent-primary);
+            background: var(--bg-hover);
+        }
+        
+        .resource-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+        
+        .resource-info {
+            flex: 1;
+        }
+        
+        .resource-name {
+            font-weight: 600;
+            font-size: 0.9375rem;
+        }
+        
+        .resource-url {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .footer-links a {
+            color: var(--accent-primary);
+            text-decoration: none;
+        }
+        
+        .footer-links a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">🤖</div>
+                <div>
+                    <h1>OpenClaw Best Practices Daily</h1>
+                    <p class="subtitle">Daily research on OpenClaw best practices, security updates, performance tips, and community insights</p>
+                </div>
+            </div>
+            <div class="report-date">
+                📅 Report Date: 2026-02-21
+            </div>
+        </div>
+    </header>
+    
+    <nav>
+        <div class="nav-content">
+            <a href="#security" class="nav-link">🔒 Security</a>
+            <a href="#performance" class="nav-link">⚡ Performance</a>
+            <a href="#features" class="nav-link">✨ New Features</a>
+            <a href="#community" class="nav-link">👥 Community</a>
+            <a href="#implementation" class="nav-link">📝 Implementation</a>
+            <a href="#resources" class="nav-link">🔗 Resources</a>
+        </div>
+    </nav>
+    
+    <main>
+        
+        <section id="security">
+            <div class="section-header">
+                <div class="section-icon security">🔒</div>
+                <h2>Security Updates</h2>
+            </div>
+            <div class="card-grid">
+                
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">CVE-2026-25253: Critical RCE Vulnerability Patched</h3>
+                    <span class="badge critical">critical</span>
+                </div>
+                <div class="card-source">📰 SecurityWeek</div>
+                <p class="card-description">A one-click remote code execution (RCE) vulnerability was disclosed on February 1, 2026. The vulnerability allowed malicious websites to steal authentication tokens and gain full control over the OpenClaw gateway.</p>
+                <div class="card-action">✅ Action: Update to OpenClaw version 2026.1.29 or later immediately. Versions prior to this release are vulnerable.</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">CVE-2026-25157: Authentication Bypass Fixed</h3>
+                    <span class="badge high">high</span>
+                </div>
+                <div class="card-source">📰 GitHub Security Advisory</div>
+                <p class="card-description">Fixed on January 25, 2026 in version 2026.1.25. This vulnerability could allow unauthorized access to the OpenClaw gateway.</p>
+                <div class="card-action">✅ Action: Verify Node.js version is v22.12.0 or later. Run 'node --version' to check.</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Six New Vulnerabilities Patched</h3>
+                    <span class="badge high">high</span>
+                </div>
+                <div class="card-source">📰 Infosecurity Magazine</div>
+                <p class="card-description">OpenClaw patched six new vulnerabilities covering server-side request forgery (SSRF), missing authentication, and path traversal bugs according to Endor Labs research.</p>
+                <div class="card-action">✅ Action: Update to the latest OpenClaw version and review security settings.</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">CVE-2025-59466: async_hooks DoS Vulnerability</h3>
+                    <span class="badge medium">medium</span>
+                </div>
+                <div class="card-source">📰 GitHub Security</div>
+                <p class="card-description">Denial of Service vulnerability in async_hooks affecting Node.js versions prior to v22.12.0.</p>
+                <div class="card-action">✅ Action: Ensure Node.js is updated to v22.12.0 or later.</div>
+            </article>
+            </div>
+        </section>
+        
+        <section id="performance">
+            <div class="section-header">
+                <div class="section-icon performance">⚡</div>
+                <h2>Performance Tips</h2>
+            </div>
+            <div class="card-grid">
+                
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Token Optimization: 70-90% Cost Reduction</h3>
+                </div>
+                <div class="card-source">📰 GitHub - OpenClaw-Token-Optimization</div>
+                <p class="card-description">Use Claude Haiku as the default model and only escalate to Sonnet for reasoning, security, and architecture tasks. This reduces $1,200/month bills to approximately $50.</p>
+                <div class="card-action">💰 Savings: 90-97% cost reduction</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Prompt Caching Best Practices</h3>
+                </div>
+                <div class="card-source">📰 OpenClaw Documentation</div>
+                <p class="card-description">Set heartbeat interval just under cache TTL (e.g., 55 minutes for 1-hour TTL) to avoid re-caching the full prompt. Cache reads are significantly cheaper than input tokens.</p>
+                <div class="card-action">💰 Savings: 60-70% reduction on prompt costs</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Context Window Management</h3>
+                </div>
+                <div class="card-source">📰 GitHub Issue #9157</div>
+                <p class="card-description">Workspace file injection was wasting 93.5% of token budget. New optimizations bring OpenClaw's token efficiency in line with production AI assistant patterns.</p>
+                <div class="card-action">💰 Savings: Up to 93% token reduction for file operations</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Low Temperature Settings Improve Cache Hit Rates</h3>
+                </div>
+                <div class="card-source">📰 ClawHosters Guide</div>
+                <p class="card-description">Use low temperature settings (0.2-0.4) to improve cache hit rates because model outputs become more deterministic and consistent.</p>
+                <div class="card-action">💰 Savings: 60-70% reduction on prompt costs</div>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Matrix Engine for Sub-Agent Calls</h3>
+                </div>
+                <div class="card-source">📰 Reddit r/ClaudeAI</div>
+                <p class="card-description">Keep top layers consistent through the Matrix Engine to significantly increase cache hit rate. Optimized for production-like sub-agent recursive calls.</p>
+                <div class="card-action">💰 Savings: 70-90% reduction in recursive calls</div>
+            </article>
+            </div>
+        </section>
+        
+        <section id="features">
+            <div class="section-header">
+                <div class="section-icon features">✨</div>
+                <h2>New Features & Releases</h2>
+            </div>
+            <div class="card-grid">
+                
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">OpenClaw v2026.2.19 Released</h3>
+                    <span class="badge new">NEW</span>
+                </div>
+                <div class="card-meta">
+                    <span>📦 2026.2.19-2</span>
+                    <span>📅 February 19, 2026</span>
+                </div>
+                <ul class="feature-list">
+                    <li>New mobile camera and screen capture features</li><li>Added location-aware reminders</li><li>Improved context window management</li><li>Fixed OAuth token refresh for Gmail integration</li><li>Security/Gateway/Canvas: node-scoped session capability URLs</li>
+                </ul>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Watch Support Added</h3>
+                    <span class="badge new">NEW</span>
+                </div>
+                <div class="card-meta">
+                    <span>📦 2026.2.15</span>
+                    <span>📅 February 15, 2026</span>
+                </div>
+                <ul class="feature-list">
+                    <li>Inbox visibility on Apple Watch</li><li>Notification relay handling</li><li>Gateway command surfaces for wrist-first contexts</li><li>APNs wake signals before nodes.invoke</li>
+                </ul>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Device Management Improvements</h3>
+                    <span class="badge new">NEW</span>
+                </div>
+                <div class="card-meta">
+                    <span>📦 2026.2.17</span>
+                    <span>📅 February 17, 2026</span>
+                </div>
+                <ul class="feature-list">
+                    <li>New 'openclaw devices remove' command</li><li>Guarded 'openclaw devices clear --yes' command</li><li>Safer management of stale or unwanted pairings</li>
+                </ul>
+            </article>
+            </div>
+        </section>
+        
+        <section id="community">
+            <div class="section-header">
+                <div class="section-icon community">👥</div>
+                <h2>Community Best Practices</h2>
+            </div>
+            <div class="card-grid">
+                
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">OpenClaw 101: Detailed Guide for New Users</h3>
+                </div>
+                <div class="card-source">👤 r/clawdbot</div>
+                <p class="card-description">Best to use Cloud AI like Google Gemini for OpenClaw. Supermemory gives you a second 'memory' layer for your Clawdbot to reference against, providing backup security if your markdown files get corrupted.</p>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Real-World Workflows That Actually Work</h3>
+                </div>
+                <div class="card-source">👤 r/AI_Agents</div>
+                <p class="card-description">Project management software updates are the most useful automation so far. Use Playwright to bypass needing separate scraping tools. Safety first - implement all security precautions before running.</p>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Architecture: The Real Problem Isn't the Hype</h3>
+                </div>
+                <div class="card-source">👤 r/AI_Agents</div>
+                <p class="card-description">What's needed is a plugin permission layer: agents get 'Create Jira Ticket', not raw 'exec'. Pinchy is building an enterprise layer on OpenClaw with open source, self-hosted options.</p>
+            </article>
+            <article class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Model Selection Matters</h3>
+                </div>
+                <div class="card-source">👤 r/AI_Agents</div>
+                <p class="card-description">OpenClaw works best with Claude for tool calling. Kimi and MiniMax are not good tool calling models. Model choice significantly impacts performance.</p>
+            </article>
+            </div>
+        </section>
+        
+        <section id="implementation">
+            <div class="section-header">
+                <div class="section-icon implementation">📝</div>
+                <h2>My Implementation Log</h2>
+            </div>
+            <div class="implementation-log">
+                
+            <div class="log-entry">
+                <div class="log-time">09:00</div>
+                <div class="log-content">
+                    <div class="log-title">Security Audit</div>
+                    <div class="log-description">Reviewed CVE-2026-25253 and confirmed instance is on v2026.1.29</div>
+                </div>
+            </div>
+            <div class="log-entry">
+                <div class="log-time">10:30</div>
+                <div class="log-content">
+                    <div class="log-title">Token Optimization</div>
+                    <div class="log-description">Implemented prompt caching with 55m heartbeat interval</div>
+                </div>
+            </div>
+            <div class="log-entry">
+                <div class="log-time">14:00</div>
+                <div class="log-content">
+                    <div class="log-title">New Skill Testing</div>
+                    <div class="log-description">Testing mobile camera capture feature from v2026.2.19</div>
+                </div>
+            </div>
+            <div class="log-entry">
+                <div class="log-time">16:00</div>
+                <div class="log-content">
+                    <div class="log-title">Community Research</div>
+                    <div class="log-description">Compiled tips from r/openclaw and X posts</div>
+                </div>
+            </div>
+            </div>
+        </section>
+        
+        <section id="resources">
+            <div class="section-header">
+                <div class="section-icon resources">🔗</div>
+                <h2>Resources & Links</h2>
+            </div>
+            <div class="resource-list">
+                
+            <a href="https://github.com/openclaw/openclaw" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">💻</div>
+                <div class="resource-info">
+                    <div class="resource-name">OpenClaw GitHub</div>
+                    <div class="resource-url">github.com/openclaw/openclaw</div>
+                </div>
+            </a>
+            <a href="https://docs.openclaw.ai" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">📖</div>
+                <div class="resource-info">
+                    <div class="resource-name">Official Documentation</div>
+                    <div class="resource-url">docs.openclaw.ai</div>
+                </div>
+            </a>
+            <a href="https://openclaw.ai" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">🌐</div>
+                <div class="resource-info">
+                    <div class="resource-name">OpenClaw Website</div>
+                    <div class="resource-url">openclaw.ai</div>
+                </div>
+            </a>
+            <a href="https://reddit.com/r/openclaw" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">🤖</div>
+                <div class="resource-info">
+                    <div class="resource-name">r/openclaw Reddit</div>
+                    <div class="resource-url">reddit.com/r/openclaw</div>
+                </div>
+            </a>
+            <a href="https://reddit.com/r/clawdbot" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">🦞</div>
+                <div class="resource-info">
+                    <div class="resource-name">r/clawdbot Reddit</div>
+                    <div class="resource-url">reddit.com/r/clawdbot</div>
+                </div>
+            </a>
+            <a href="https://www.npmjs.com/package/openclaw" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">📦</div>
+                <div class="resource-info">
+                    <div class="resource-name">NPM Package</div>
+                    <div class="resource-url">www.npmjs.com/package/openclaw</div>
+                </div>
+            </a>
+            <a href="https://github.com/openclaw/openclaw/blob/main/CHANGELOG.md" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">📝</div>
+                <div class="resource-info">
+                    <div class="resource-name">Changelog</div>
+                    <div class="resource-url">github.com/openclaw/openclaw/blob/main/CHANGELOG.md</div>
+                </div>
+            </a>
+            <a href="https://github.com/openclaw/openclaw/security" class="resource-item" target="_blank" rel="noopener">
+                <div class="resource-icon">🔐</div>
+                <div class="resource-info">
+                    <div class="resource-name">Security Advisories</div>
+                    <div class="resource-url">github.com/openclaw/openclaw/security</div>
+                </div>
+            </a>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="https://github.com/jarvisbecket-stack/openclaw-best-practices">GitHub</a>
+                <a href="https://jarvisbecket-stack.github.io/openclaw-best-practices">Live Site</a>
+                <a href="https://openclaw.ai">OpenClaw</a>
+            </div>
+            <p>Generated on 2026-02-21 23:31  • Auto-published daily at 10 PM CST</p>
+            <p style="margin-top: 0.5rem; opacity: 0.7;">Research sources: Reddit, X/Twitter, YouTube, GitHub, Security advisories</p>
+        </div>
+    </footer>
+    
+    <script>
+        // Smooth scroll for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Active nav link on scroll
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+        
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (scrollY >= sectionTop - 100) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
