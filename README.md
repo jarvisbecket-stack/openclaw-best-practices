@@ -24,6 +24,7 @@ This site is automatically updated daily with:
 - [OpenClaw Documentation](https://docs.openclaw.ai)
 - [r/openclaw](https://reddit.com/r/openclaw)
 - [r/clawdbot](https://reddit.com/r/clawdbot)
+- **[Bitcoin Daily Forecast](https://jarvisbecket-stack.github.io/btc-daily-report/)** — Live BTC analysis with real data
 
 ---
 
