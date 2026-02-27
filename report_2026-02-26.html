@@ -1,414 +1,239 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OpenClaw Best Practices Daily - 2026-02-26</title>
-    <meta name="description" content="Daily research on OpenClaw best practices, security updates, performance tips, and community insights">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>OpenClaw Best Practices + Research - 2026-02-26</title>
     <style>
         :root {
-            --bg-primary: #0a0a0f; --bg-secondary: #12121a; --bg-card: #1a1a25; --bg-hover: #252535;
-            --text-primary: #e8e8f0; --text-secondary: #a0a0b0;
-            --accent-primary: #6366f1; --accent-secondary: #8b5cf6; --accent-success: #10b981;
-            --accent-warning: #f59e0b; --accent-danger: #ef4444; --accent-info: #3b82f6;
-            --border-color: #2a2a3a; --shadow: 0 4px 6px -1px rgba(0,0,0,0.3);
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-card: #1a1a25;
+            --bg-hover: #252535;
+            --text-primary: #e8e8f0;
+            --text-secondary: #a0a0b0;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-success: #10b981;
+            --accent-warning: #f59e0b;
+            --accent-danger: #ef4444;
+            --accent-info: #3b82f6;
+            --border-color: #2a2a3a;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-primary); color: var(--text-primary); line-height: 1.6;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
         }
         header {
             background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-card) 100%);
-            border-bottom: 1px solid var(--border-color); padding: 2rem 1rem;
-        }
-        .header-content { max-width: 1200px; margin: 0 auto; }
-        .logo { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
-        .logo-icon {
-            width: 48px; height: 48px; background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding: 2rem 1rem;
+            text-align: center;
         }
         h1 {
-            font-size: 1.75rem; font-weight: 700;
+            font-size: 2rem;
             background: linear-gradient(135deg, var(--text-primary), var(--accent-primary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .subtitle { color: var(--text-secondary); font-size: 1rem; }
-        .report-date {
-            display: inline-flex; align-items: center; gap: 0.5rem;
-            background: var(--bg-card); padding: 0.5rem 1rem; border-radius: 20px;
-            font-size: 0.875rem; color: var(--accent-primary); margin-top: 1rem;
+        .date { color: var(--text-secondary); margin-top: 0.5rem; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 2rem 1rem; }
+        .section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
         }
-        nav {
-            background: var(--bg-card); border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 1rem; position: sticky; top: 0; z-index: 100; overflow-x: auto;
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
-        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; gap: 0.5rem; }
-        .nav-link {
-            color: var(--text-secondary); text-decoration: none; padding: 0.5rem 1rem;
-            border-radius: 8px; font-size: 0.875rem; font-weight: 500; white-space: nowrap; transition: all 0.2s;
+        .alert-critical {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid var(--accent-danger);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
         }
-        .nav-link:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .nav-link.active { background: var(--accent-primary); color: white; }
-        main { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
-        section { margin-bottom: 3rem; }
-        .section-header {
-            display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem;
-            padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-color);
+        .alert-title { color: var(--accent-danger); font-weight: 600; }
+        .action-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
         }
-        .section-icon {
-            width: 36px; height: 36px; border-radius: 8px; display: flex;
-            align-items: center; justify-content: center; font-size: 18px;
+        .priority-high {
+            background: var(--accent-danger);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
-        .section-icon.security { background: rgba(239, 68, 68, 0.2); }
-        .section-icon.performance { background: rgba(16, 185, 129, 0.2); }
-        .section-icon.features { background: rgba(99, 102, 241, 0.2); }
-        .section-icon.community { background: rgba(245, 158, 11, 0.2); }
-        .section-icon.implementation { background: rgba(59, 130, 246, 0.2); }
-        .section-icon.resources { background: rgba(139, 92, 246, 0.2); }
-        h2 { font-size: 1.5rem; font-weight: 600; }
-        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1rem; }
-        @media (max-width: 768px) { .card-grid { grid-template-columns: 1fr; } }
-        .card {
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 1.25rem; transition: all 0.2s;
+        .capability {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-primary);
         }
-        .card:hover { border-color: var(--accent-primary); box-shadow: var(--shadow); transform: translateY(-2px); }
-        .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
-        .card-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); line-height: 1.4; }
-        .badge {
-            display: inline-flex; align-items: center; padding: 0.25rem 0.5rem;
-            border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+        .capability-title { font-weight: 600; color: var(--accent-primary); }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
         }
-        .badge.critical { background: rgba(239, 68, 68, 0.2); color: var(--accent-danger); }
-        .badge.high { background: rgba(245, 158, 11, 0.2); color: var(--accent-warning); }
-        .badge.medium { background: rgba(59, 130, 246, 0.2); color: var(--accent-info); }
-        .badge.new { background: rgba(99, 102, 241, 0.2); color: var(--accent-primary); }
-        .card-source { font-size: 0.875rem; color: var(--accent-primary); margin-bottom: 0.5rem; }
-        .card-description { font-size: 0.9375rem; color: var(--text-secondary); line-height: 1.6; }
-        .card-action {
-            margin-top: 0.75rem; padding: 0.75rem; background: var(--bg-secondary);
-            border-radius: 8px; font-size: 0.875rem; color: var(--accent-success);
+        th, td {
+            text-align: left;
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
         }
+        th { color: var(--text-secondary); font-weight: 500; }
+        a { color: var(--accent-primary); text-decoration: none; }
+        a:hover { text-decoration: underline; }
         .savings { color: var(--accent-success); font-weight: 700; }
-        .log-entry {
-            display: flex; gap: 1rem; padding: 1rem; background: var(--bg-card);
-            border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 0.75rem;
-        }
-        .log-time { font-size: 0.875rem; color: var(--text-secondary); white-space: nowrap; font-family: monospace; }
-        .log-content { flex: 1; }
-        .log-title { font-weight: 600; margin-bottom: 0.25rem; }
-        .log-description { font-size: 0.875rem; color: var(--text-secondary); }
-        .resource-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-        .resource-item {
-            display: flex; align-items: center; gap: 0.75rem; padding: 1rem;
-            background: var(--bg-card); border: 1px solid var(--border-color);
-            border-radius: 8px; text-decoration: none; color: var(--text-primary); transition: all 0.2s;
-        }
-        .resource-item:hover { border-color: var(--accent-primary); background: var(--bg-hover); }
-        .resource-icon { width: 40px; height: 40px; background: var(--bg-secondary); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .resource-name { font-weight: 600; font-size: 0.9375rem; }
-        .resource-url { font-size: 0.75rem; color: var(--text-secondary); }
         footer {
-            background: var(--bg-secondary); border-top: 1px solid var(--border-color);
-            padding: 2rem 1rem; margin-top: 4rem;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
         }
-        .footer-content { max-width: 1200px; margin: 0 auto; text-align: center; color: var(--text-secondary); font-size: 0.875rem; }
-        .footer-links { display: flex; justify-content: center; gap: 1.5rem; margin-bottom: 1rem; }
-        .footer-links a { color: var(--accent-primary); text-decoration: none; }
-        .footer-links a:hover { text-decoration: underline; }
-        code {
-            background: var(--bg-secondary); padding: 0.25rem 0.5rem;
-            border-radius: 4px; font-family: monospace; font-size: 0.9rem;
-        }
+        .source { font-size: 0.8rem; color: var(--text-secondary); margin-top: 0.5rem; }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-content">
-            <div class="logo">
-                <div class="logo-icon">🤖</div>
-                <div>
-                    <h1>OpenClaw Best Practices Daily</h1>
-                    <p class="subtitle">Daily research on OpenClaw best practices, security updates, performance tips, and community insights</p>
-                </div>
-            </div>
-            <div class="report-date">📅 Report Date: 2026-02-26 CST</div>
-        </div>
+        <h1>🔧 OpenClaw Best Practices + Research</h1>
+        <div class="date">2026-02-26 — Social Media Aggregated Report | America/Chicago</div>
     </header>
     
-    <nav>
-        <div class="nav-content">
-            <a href="#security" class="nav-link">🔒 Security</a>
-            <a href="#performance" class="nav-link">⚡ Performance</a>
-            <a href="#features" class="nav-link">✨ Features</a>
-            <a href="#community" class="nav-link">👥 Community</a>
-            <a href="#implementation" class="nav-link">📝 Log</a>
-            <a href="#resources" class="nav-link">🔗 Resources</a>
+    <div class="container">
+        <!-- Security Alerts -->
+        <div class="section">
+            <div class="section-title">🚨 Security Alerts</div>
+
+            <div class="alert-warning">
+                <div class="alert-title">high: Your AI agent just learned to read your Android notification</div>
+                <p>Your AI agent just learned to read your Android notifications.
+
+That's not even the biggest thing in today's OpenClaw update.
+
+v2026.2.26 just dropped. 9 features. 10 fixes. And the one most people wi</p>
+                <div class="source">Source: X/Twitter</div>
+            </div>
+
+            <div class="alert-warning">
+                <div class="alert-title">high: Your AI agent just learned to read your Android notification</div>
+                <p>Your AI agent just learned to read your Android notifications.
+
+That's not even the biggest thing in today's OpenClaw update.
+
+v2026.2.26 just dropped. 9 features. 10 fixes. And the one most people wi</p>
+                <div class="source">Source: X/Twitter</div>
+            </div>
+
         </div>
-    </nav>
-    
-    <main>
-        <!-- Security Section -->
-        <section id="security">
-            <div class="section-header">
-                <div class="section-icon security">🔒</div>
-                <h2>Security Updates</h2>
-            </div>
-            <div class="card-grid">
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Docker Isolation Required</h3>
-                        <span class="badge high">high</span>
-                    </div>
-                    <div class="card-source">📰 Best Practice</div>
-                    <p class="card-description">Never run OpenClaw on primary computer with personal file access</p>
-                    <div class="card-action">✅ Action: Use Docker or isolated VM</div>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Network Binding Security</h3>
-                        <span class="badge high">high</span>
-                    </div>
-                    <div class="card-source">📰 Best Practice</div>
-                    <p class="card-description">Bind OpenClaw to loopback only (127.0.0.1)</p>
-                    <div class="card-action">✅ Action: Access via Tailscale/SSH tunnels only</div>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Regular Security Audits</h3>
-                        <span class="badge medium">medium</span>
-                    </div>
-                    <div class="card-source">📰 Best Practice</div>
-                    <p class="card-description">Run security audits daily to catch issues early</p>
-                    <div class="card-action">✅ Action: Schedule: openclaw security audit --deep</div>
-                </article>
-
-            </div>
-        </section>
         
-        <!-- Performance Section -->
-        <section id="performance">
-            <div class="section-header">
-                <div class="section-icon performance">⚡</div>
-                <h2>Performance & Cost Optimization</h2>
+        <!-- Capability Enhancements -->
+        <div class="section">
+            <div class="section-title">🚀 Capability Enhancements</div>
+
+            <div class="capability">
+                <div class="capability-title">New Capability</div>
+                <p style="margin-top: 0.5rem;">@YinjieW2024 @openclaw genuine question for the OpenClaw-RL team: if RL is necessary for coding agents to learn *when* to use tools, how do you explain Claude Code and Codex dominating with zero fine-tuning?
+
+at some capability threshold, runtime ada</p>
+                <div class="source">Source: X/Twitter</div>
             </div>
-            <div class="card-grid">
 
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Cheaper model for sub-agents</h3>
-                        <span class="savings">40-60%</span>
-                    </div>
-                    <div class="card-source">📊 Cost Optimization</div>
-                    <p class="card-description">Set agents.defaults.subagents.model to Haiku/Kimi K2.5</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Cache-friendly prompt ordering</h3>
-                        <span class="savings">20-30%</span>
-                    </div>
-                    <div class="card-source">📊 Performance</div>
-                    <p class="card-description">Static context first, dynamic content last</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Using variables vs repetition</h3>
-                        <span class="savings">Up to 82%</span>
-                    </div>
-                    <div class="card-source">📊 Efficiency</div>
-                    <p class="card-description">Reference values instead of repeating in prompts</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Regular session resets</h3>
-                        <span class="savings">40-50%</span>
-                    </div>
-                    <div class="card-source">📊 Token Management</div>
-                    <p class="card-description">Reset context every 4 hours during heavy use</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Isolated sessions for large outputs</h3>
-                        <span class="savings">20-30%</span>
-                    </div>
-                    <div class="card-source">📊 Context Management</div>
-                    <p class="card-description">Use --session debug for big operations</p>
-                </article>
-
-            </div>
-        </section>
+        </div>
         
-        <!-- Features Section -->
-        <section id="features">
-            <div class="section-header">
-                <div class="section-icon features">✨</div>
-                <h2>New Features & Capabilities</h2>
-            </div>
-            <div class="card-grid">
+        <!-- Community Insights -->
+        <div class="section">
+            <div class="section-title">👥 Community Insights</div>
+            <ul style="list-style: none; padding: 0;">
 
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">OpenClaw v2026.2.25</h3>
-                        <span class="badge new">NEW</span>
-                    </div>
-                    <div class="card-source">🚀 GitHub Release</div>
-                    <p class="card-description">
-### Changes
+                <li style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <div>Use /compact to reduce context window usage</div>
+                    <div class="source">Source: r/openclaw</div>
+                </li>
 
-- Android/Chat: improve streaming delivery handling and markdown rendering quality in the native Android chat UI, including better GitHub-flavored markdown behavior. (#26079) Thanks @obviyus.
-- Android/Startup perf: defer foreground-ser</p>
-                    
-                </article>
+                <li style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <div>Set different models for main vs sub-agents to save costs</div>
+                    <div class="source">Source: r/LocalLLaMA</div>
+                </li>
 
-            </div>
-        </section>
+                <li style="padding: 0.75rem; background: var(--bg-secondary); border-radius: 8px; margin-bottom: 0.5rem;">
+                    <div>Daily memory audits prevent token bloat</div>
+                    <div class="source">Source: Best Practice</div>
+                </li>
+
+            </ul>
+        </div>
         
-        <!-- Community Section -->
-        <section id="community">
-            <div class="section-header">
-                <div class="section-icon community">👥</div>
-                <h2>Community Insights</h2>
-            </div>
-            <div class="card-grid">
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">💡 Community Tip</h3>
-                    </div>
-                    <div class="card-source">👤 r/openclaw</div>
-                    <p class="card-description">Use /compact to reduce context window usage</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">💡 Community Tip</h3>
-                    </div>
-                    <div class="card-source">👤 r/LocalLLaMA</div>
-                    <p class="card-description">Set different models for main vs sub-agents to save costs</p>
-                </article>
-
-                <article class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">💡 Community Tip</h3>
-                    </div>
-                    <div class="card-source">👤 Best Practice</div>
-                    <p class="card-description">Daily memory audits prevent token bloat</p>
-                </article>
-
-            </div>
-        </section>
+        <!-- Efficiency Tips -->
+        <div class="section">
+            <div class="section-title">⚡ Efficiency Wins</div>
+            <table>
+                <tr>
+                    <th>Strategy</th>
+                    <th>Savings</th>
+                    <th>How To</th>
+                </tr>
+                <tr>
+                    <td>Cheaper model for sub-agents</td>
+                    <td class="savings">40-60%</td>
+                    <td><code>Set agents.defaults.subagents.model to Haiku</code></td>
+                </tr>
+                <tr>
+                    <td>Cache-friendly prompt ordering</td>
+                    <td class="savings">20-30%</td>
+                    <td><code>Static context first, dynamic content last</code></td>
+                </tr>
+                <tr>
+                    <td>Using variables vs repetition</td>
+                    <td class="savings">Up to 82%</td>
+                    <td><code>Reference values instead of repeating</code></td>
+                </tr>
+            </table>
+        </div>
         
-        <!-- Implementation Log -->
-        <section id="implementation">
-            <div class="section-header">
-                <div class="section-icon implementation">📝</div>
-                <h2>Today's Implementation Log</h2>
-            </div>
-
-            <div class="log-entry">
-                <div class="log-time">07:00</div>
-                <div class="log-content">
-                    <div class="log-title">Security Audit</div>
-                    <div class="log-description">Ran openclaw security audit --deep</div>
-                </div>
-            </div>
-
-            <div class="log-entry">
-                <div class="log-time">07:05</div>
-                <div class="log-content">
-                    <div class="log-title">Memory Maintenance</div>
-                    <div class="log-description">Archived old memory files, updated INDEX.md</div>
-                </div>
-            </div>
-
-            <div class="log-entry">
-                <div class="log-time">07:10</div>
-                <div class="log-content">
-                    <div class="log-title">Report Generation</div>
-                    <div class="log-description">Generated daily best practices report</div>
-                </div>
-            </div>
-
-        </section>
-        
-        <!-- Resources Section -->
-        <section id="resources">
-            <div class="section-header">
-                <div class="section-icon resources">🔗</div>
-                <h2>Essential Resources</h2>
-            </div>
-            <div class="resource-list">
-
-                <a href="https://github.com/openclaw/openclaw" class="resource-item" target="_blank">
-                    <div class="resource-icon">🐙</div>
-                    <div class="resource-info">
-                        <div class="resource-name">OpenClaw GitHub</div>
-                        <div class="resource-url">github.com/openclaw/openclaw</div>
-                    </div>
-                </a>
-
-                <a href="https://docs.openclaw.ai" class="resource-item" target="_blank">
-                    <div class="resource-icon">📚</div>
-                    <div class="resource-info">
-                        <div class="resource-name">OpenClaw Documentation</div>
-                        <div class="resource-url">docs.openclaw.ai</div>
-                    </div>
-                </a>
-
-                <a href="https://reddit.com/r/openclaw" class="resource-item" target="_blank">
-                    <div class="resource-icon">👥</div>
-                    <div class="resource-info">
-                        <div class="resource-name">r/openclaw</div>
-                        <div class="resource-url">reddit.com/r/openclaw</div>
-                    </div>
-                </a>
-
-                <a href="https://clawhub.com" class="resource-item" target="_blank">
-                    <div class="resource-icon">🧩</div>
-                    <div class="resource-info">
-                        <div class="resource-name">ClawHub Skills</div>
-                        <div class="resource-url">clawhub.com</div>
-                    </div>
-                </a>
-
-                <a href="https://discord.gg/clawd" class="resource-item" target="_blank">
-                    <div class="resource-icon">💬</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Discord Community</div>
-                        <div class="resource-url">discord.gg/clawd</div>
-                    </div>
-                </a>
-
-                <a href="https://jarvisbecket-stack.github.io/btc-daily-report/" class="resource-item" target="_blank">
-                    <div class="resource-icon">📊</div>
-                    <div class="resource-info">
-                        <div class="resource-name">Bitcoin Daily Report</div>
-                        <div class="resource-url">jarvisbecket-stack.github.io/btc-daily-report/</div>
-                    </div>
-                </a>
-
-            </div>
-        </section>
-    </main>
+        <!-- Core Best Practices -->
+        <div class="section">
+            <div class="section-title">📋 Core Best Practices</div>
+            <table>
+                <tr><th>Category</th><th>Rule</th></tr>
+                <tr><td style="color: var(--accent-primary);">Security</td><td>Never run OpenClaw on primary computer with personal file access</td></tr>
+                <tr><td style="color: var(--accent-primary);">Security</td><td>Use Docker isolation, run as non-root</td></tr>
+                <tr><td style="color: var(--accent-primary);">Security</td><td>Bind to loopback only, access via Tailscale/SSH tunnels</td></tr>
+                <tr><td style="color: var(--accent-primary);">Data</td><td>Use real APIs only — never mock or simulated data</td></tr>
+                <tr><td style="color: var(--accent-primary);">Quality</td><td>Verify before declaring done</td></tr>
+                <tr><td style="color: var(--accent-primary);">Memory</td><td>Document to files, not mental notes</td></tr>
+            </table>
+        </div>
+    </div>
     
     <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="https://jarvisbecket-stack.github.io/openclaw-best-practices-tracker/">View Archive</a>
-                <a href="https://jarvisbecket-stack.github.io/btc-daily-report/">Bitcoin Report</a>
-                <a href="https://github.com/jarvisbecket-stack">GitHub</a>
-            </div>
-            <p>Generated for Ricardo Davila | 2026-02-26 15:13:09 CST</p>
-            <p>Data sources: X/Twitter, Reddit, GitHub, OpenClaw Community</p>
-        </div>
+        <p>Generated for Ricardo Davila | 2026-02-26 19:24:55 CST</p>
+        <p style="margin-top: 0.5rem;">Data: Reddit, X/Twitter, YouTube, GitHub, OpenClaw Community</p>
     </footer>
 </body>
 </html>
